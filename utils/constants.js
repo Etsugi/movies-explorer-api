@@ -3,7 +3,7 @@ const allowlist = [
   'http://api.diplom.kiprin.students.nomoredomains.icu/',
   'https://diplom.kiprin.students.nomoredomains.icu/',
   'http://diplom.kiprin.students.nomoredomains.icu/',
-  'http://localhost:3000'
+  'http://localhost:3001'
 ];
 
 const mongooseAddress = 'mongodb://localhost:27017/diplomDB';
