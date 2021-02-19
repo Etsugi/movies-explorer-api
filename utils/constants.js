@@ -1,3 +1,5 @@
+const { NODE_ENV, MONGOOSE_ADDRESS } = process.env;
+
 const allowlist = [
   'https://api.diplom.kiprin.students.nomoredomains.icu/',
   'http://api.diplom.kiprin.students.nomoredomains.icu/',
@@ -6,7 +8,7 @@ const allowlist = [
   'http://localhost:3001'
 ];
 
-const mongooseAddress = 'mongodb://localhost:27017/diplomDB';
+const mongooseAddress = (NODE_ENV === 'production' ? MONGOOSE_ADDRESS : 'mongodb://localhost:27017/dev/movieDB');
 
 const mongooseSettings = {
   useNewUrlParser: true,
