@@ -8,7 +8,7 @@ const allowlist = [
   'http://localhost:3001'
 ];
 
-const mongooseAddress = (NODE_ENV === 'production' ? MONGOOSE_ADDRESS : 'mongodb://localhost:27017/dev/movieDB');
+const mongooseAddress = (NODE_ENV === 'production' ? MONGOOSE_ADDRESS : 'mongodb://localhost:27017/movieDB');
 
 const mongooseSettings = {
   useNewUrlParser: true,
