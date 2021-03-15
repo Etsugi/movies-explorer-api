@@ -5,7 +5,7 @@ const allowlist = [
   'http://api.diplom.kiprin.students.nomoredomains.icu/',
   'https://diplom.kiprin.students.nomoredomains.icu/',
   'http://diplom.kiprin.students.nomoredomains.icu/',
-  'http://localhost:3001'
+  'http://localhost:3000'
 ];
 
 const mongooseAddress = (NODE_ENV === 'production' ? MONGOOSE_ADDRESS : 'mongodb://localhost:27017/movieDB');
