@@ -11,7 +11,7 @@ const {
 
 async function getMovies(req, res, next) {
   try {
-    const movie = await Movie.find({})
+    const movie = await Movie.find({owner: req.user._id})
       .populate(['owner']);
     res.send(movie);
   } catch (err) {
@@ -41,8 +41,7 @@ async function createMovie(req, res, next) {
         { movieId },
         { $addToSet: { owner: userId } },
         { new: true }
-      )
-        .populate(['owner']);
+      );
 
       res.send(addOwner);
     } catch (err) {
@@ -71,8 +70,7 @@ async function createMovie(req, res, next) {
         nameEN,
         movieId,
         owner: userId
-      })
-        .populate(['owner']);
+      });
 
       res.send(movie);
     } catch (err) {
@@ -98,9 +96,7 @@ async function deleteMovie(req, res, next) {
       const delOwner = await Movie.findOneAndUpdate(
         { movieId },
         { $pull: { owner: userId } }
-      )
-        .populate(['owner']);
-
+      );
       res.send(delOwner);
     } else {
       throw new NotFoundError(movieNotFoundErrMess);
