@@ -11,7 +11,6 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes/index');
 const { errorHandler } = require('./utils/error-handler');
 const {
-  allowlist,
   mongooseAddress,
   mongooseSettings,
   limiterSettings
@@ -20,9 +19,9 @@ const {
 const { PORT = 3001 } = process.env;
 const app = express();
 
+const allowedCors = '*';
 app.use(cors({
-  origin: allowlist,
-  credentials: true
+  origin: allowedCors
 }));
 
 mongoose.connect(mongooseAddress, mongooseSettings);

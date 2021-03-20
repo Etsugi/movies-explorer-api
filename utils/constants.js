@@ -1,13 +1,5 @@
 const { NODE_ENV, MONGOOSE_ADDRESS } = process.env;
 
-const allowlist = [
-  'https://api.diplom.kiprin.students.nomoredomains.icu/',
-  'http://api.diplom.kiprin.students.nomoredomains.icu/',
-  'https://diplom.kiprin.students.nomoredomains.icu/',
-  'http://diplom.kiprin.students.nomoredomains.icu/',
-  'http://localhost:3000'
-];
-
 const mongooseAddress = (NODE_ENV === 'production' ? MONGOOSE_ADDRESS : 'mongodb://localhost:27017/movieDB');
 
 const mongooseSettings = {
@@ -24,7 +16,6 @@ const limiterSettings = {
 };
 
 module.exports = {
-  allowlist,
   mongooseAddress,
   mongooseSettings,
   limiterSettings
