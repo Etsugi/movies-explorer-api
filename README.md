@@ -1,8 +1,8 @@
-# Проект: [Movies-explorer-api](https://etsugi.github.io/movies-explorer-api/)
+# Проект: Movies-explorer-api
 
 # Описание:
 Бэкенд дипломной работы.
   
-Публичный id: 130.193.50.220
+Публичный id: 84.201.174.166
 
 Доменное имя сервера: https://api.diplom.kiprin.students.nomoredomains.icu
