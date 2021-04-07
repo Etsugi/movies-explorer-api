@@ -2,18 +2,16 @@ const Movie = require('../models/movie');
 
 const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
-const ForbiddenError = require('../errors/forbidden-err');
 const ConflictingRequestError = require('../errors/conflicting-request-err');
 const {
   badRequestErrMess,
   movieNotFoundErrMess,
-  forbiddenErrMess,
   conflictMovieReqErrMess
 } = require('../utils/error-messages');
 
 async function getMovies(req, res, next) {
   try {
-    const movie = await Movie.find({})
+    const movie = await Movie.find({owner: req.user._id})
       .populate(['owner']);
     res.send(movie);
   } catch (err) {
@@ -35,53 +33,73 @@ async function createMovie(req, res, next) {
     thumbnail,
     movieId
   } = req.body;
-  const owner = req.user._id;
+  const userId = req.user._id;
+  const checkMovie = await Movie.findOne({ movieId });
+  if (checkMovie) {
+    try {
+      const addOwner = await Movie.findOneAndUpdate(
+        { movieId },
+        { $addToSet: { owner: userId } },
+        { new: true }
+      );
 
-  try {
-    const movie = await Movie.create({
-      country,
-      director,
-      duration,
-      year,
-      description,
-      image,
-      trailer,
-      thumbnail,
-      nameRU,
-      nameEN,
-      movieId,
-      owner
-    });
+      res.send(addOwner);
+    } catch (err) {
+      if (err.code === 11000) {
+        const conflictingRequestError = new ConflictingRequestError(conflictMovieReqErrMess);
+        next(conflictingRequestError);
+      }
+      if (err.name === 'ValidationError') {
+        const badRequestError = new BadRequestError(badRequestErrMess);
+        next(badRequestError);
+      }
+      next(err);
+    }
+  } else {
+    try {
+      const movie = await Movie.create({
+        country,
+        director,
+        duration,
+        year,
+        description,
+        image,
+        trailer,
+        thumbnail,
+        nameRU,
+        nameEN,
+        movieId,
+        owner: userId
+      });
 
-    res.send(movie);
-  } catch (err) {
-    if (err.code === 11000) {
-      const conflictingRequestError = new ConflictingRequestError(conflictMovieReqErrMess);
-      next(conflictingRequestError);
+      res.send(movie);
+    } catch (err) {
+      if (err.code === 11000) {
+        const conflictingRequestError = new ConflictingRequestError(conflictMovieReqErrMess);
+        next(conflictingRequestError);
+      }
+      if (err.name === 'ValidationError') {
+        const badRequestError = new BadRequestError(badRequestErrMess);
+        next(badRequestError);
+      }
+      next(err);
     }
-    if (err.name === 'ValidationError') {
-      const badRequestError = new BadRequestError(badRequestErrMess);
-      next(badRequestError);
-    }
-    next(err);
   }
 }
 
 async function deleteMovie(req, res, next) {
   const { movieId } = req.params;
-  const id = req.user._id;
-
+  const userId = req.user._id;
+  const delMovie = await Movie.findOne({ movieId });
   try {
-    const movie = await Movie.findById(movieId)
-      .orFail(() => {
-        throw new NotFoundError(movieNotFoundErrMess);
-      });
-    if (movie.owner.toString() !== id) {
-      throw new ForbiddenError(forbiddenErrMess);
+    if (delMovie) {
+      const delOwner = await Movie.findOneAndUpdate(
+        { movieId },
+        { $pull: { owner: userId } }
+      );
+      res.send(delOwner);
     } else {
-      const delMovie = await Movie.findByIdAndRemove(movieId)
-        .populate(['owner']);
-      res.send(delMovie);
+      throw new NotFoundError(movieNotFoundErrMess);
     }
   } catch (err) {
     if (err.kind === 'ObjectId') {
